@@ -1,20 +1,12 @@
-# http://rpm-guide.readthedocs.io/en/latest/rpm-guide.html#what-is-a-spec-file
-# http://rpm.org/user_doc/
-# http://ftp.rpm.org/max-rpm/s1-rpm-inside-macros.html
-# https://fedoraproject.org/wiki/How_to_create_an_RPM_package
-
 Name:               trilinos-xyce-serial
 Version:            12.10.1
 Release:            1%{?dist}
 Summary:            Trilinos packages for Xyce serial
-
-Group:              Applications/Engineering
 License:            Trilinos is licensed on a per-package basis. Most packages are now under a BSD license, some are published under the (L)GPL.
 URL:                https://trilinos.org
 
-# Source0:            https://trilinos.org/oldsite/download/login.html?tid=tr12101gz
-# https://github.com/trilinos/Trilinos
-Source0:            https://github.com/trilinos/Trilinos/archive/trilinos-release-12-10-1.tar.bz2
+# Source0:          https://trilinos.org/oldsite/download/login.html?tid=tr12101gz
+Source0:            https://github.com/trilinos/Trilinos/archive/trilinos-release-%{version}.tar.bz2
 
 BuildRoot:          %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -25,14 +17,14 @@ BuildRequires:      fftw-devel
 BuildRequires:      flex
 BuildRequires:      lapack-devel
 BuildRequires:      suitesparse-devel
-# BuildRequires:      openmpi-devel
+# BuildRequires:    openmpi-devel
 
 Requires:           blas
 Requires:           fftw
 Requires:           lapack
 Requires:           suitesparse
-# Requires:           ParMETIS
-# Requires:           openmpi
+# Requires:         ParMETIS
+# Requires:         openmpi
 
 #---------------------------------------------------------------------------------------------------
 
@@ -59,17 +51,12 @@ on packages.
 
 %build
 
-# https://fedoraproject.org/wiki/Packaging:Cmake
-
 SRCDIR=`pwd`
 PREFIX=%{_prefix}/local/XyceLibs/Serial # don't respect FHS
-FLAGS="%{optflags} -O3 -fPIC" # -march=native
+FLAGS="%{optflags} -O3 -fPIC"
 
 mkdir build
 cd build
-
-# /usr/lib/rpm/macros.d/macros.cmake
-# % cmake . # space else ...
 
 /usr/bin/cmake \
   -G "Unix Makefiles" \
@@ -110,13 +97,12 @@ cd build
   -DTPL_ENABLE_LAPACK=ON \
   $SRCDIR
 
-# make %{?_smp_mflags}
 %make_build
 
 #---------------------------------------------------------------------------------------------------
 
 %install
-# rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 # %make_install
 cd build
 make install DESTDIR=%{buildroot}
@@ -128,23 +114,11 @@ rm -rf $RPM_BUILD_ROOT
 
 #---------------------------------------------------------------------------------------------------
 
-# https://fedoraproject.org/wiki/Packaging:RPMMacros
-# %{_prefix}            /usr
-# %{_exec_prefix}       %{_prefix}
-# %{_bindir}            %{_exec_prefix}/bin
-# %{_libdir}            %{_exec_prefix}/%{_lib}
-# %{_datarootdir}       %{_prefix}/share
-# %{_datadir}           %{_datarootdir}
-# %{_includedir}        %{_prefix}/include
-# %{_mandir}            /usr/share/man
-
 %files
+# install static libraries !
 %{_prefix}/local/XyceLibs/Serial
 
 #---------------------------------------------------------------------------------------------------
-
-# LC_TIME=en_US date +"%a %b %e %Y"
-# fabricesalvaire@@fedoraproject.org
 
 %changelog
 * Sun Sep 17 2017 Fabrice Salvaire <pyspice [AT] fabrice-salvaire DOT fr>
