@@ -1,0 +1,1 @@
+RPM source for https://copr.fedorainfracloud.org/coprs/fabricesalvaire/xyce
